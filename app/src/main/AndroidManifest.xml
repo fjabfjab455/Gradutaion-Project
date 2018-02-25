@@ -21,6 +21,9 @@
         </activity>
         <activity android:name=".BaseActivity" />
         <activity android:name=".PlayAcitivty" />
+        <activity android:name=".Disc.MainDiscActivity" />
+
+        <service android:name=".Disc.service.MusicService" />
     </application>
 
 </manifest>
