@@ -87,7 +87,7 @@ public class DiscView extends RelativeLayout {
     }
 
     private void initDiscBackground() {
-        ImageView iv_disc_background = findViewById(R.id.ivDiscBlackgound);
+        ImageView iv_disc_background = findViewById(R.id.ivDiscBackground);
         iv_disc_background.setImageDrawable(getDiscDrawableBackground() );
 
         int marginTop = (int) DisplayGlobal.SCALE_DISC_MARGIN_TOP * screenHeight;
@@ -275,8 +275,7 @@ public class DiscView extends RelativeLayout {
         int discSize = (int) DisplayGlobal.SCALE_DISC_SIZE * screenWidth;
         Bitmap bitmapDisc = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.ic_disc_blackground),
                 discSize, discSize, false);
-        RoundedBitmapDrawable roundDiscDrawable = RoundedBitmapDrawableFactory.create(getResources(), bitmapDisc);
-        return roundDiscDrawable;
+        return RoundedBitmapDrawableFactory.create(getResources(), bitmapDisc);
     }
 
     //得到唱盘图片（由空心圆盘及专辑图组合而成）

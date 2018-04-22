@@ -6,7 +6,7 @@
 
     <!--底盘-->
     <ImageView
-        android:id="@+id/ivDiscBlackgound"
+        android:id="@+id/ivDiscBackground"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"

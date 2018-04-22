@@ -86,14 +86,12 @@ public class MainDiscActivity extends BaseActivity {
         musicDatas = new ArrayList<>();
         initMusicDatas();
         initMusicReceiver();
-
     }
 
     @Override
     protected void initContentView() {
         super.initContentView();
         setContentView(R.layout.activity_disc_main);
-
     }
 
     @Override

@@ -6,7 +6,7 @@
     android:id="@+id/rootLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/ic_blackground"
+    android:background="@drawable/ic_background"
     android:fitsSystemWindows="true"
     >
 
@@ -45,14 +45,14 @@
 
         <TextView
             android:id="@+id/tvCurrentTime"
-            style="@style/neteasa_music_time_text_sytle"
+            style="@style/netease_music_time_text_style"
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
             tools:text="01:34"/>
 
         <SeekBar
             android:id="@+id/musicSeekBar"
-            style="@style/neteasa_music_time_seek_bar_sytle"
+            style="@style/netease_music_time_seek_bar_style"
             android:layout_centerInParent="true"
             android:layout_toEndOf="@id/tvCurrentTime"
             android:layout_toStartOf="@+id/tvTotalTime"
@@ -62,7 +62,7 @@
 
         <TextView
             android:id="@+id/tvTotalTime"
-            style="@style/neteasa_music_time_text_sytle"
+            style="@style/netease_music_time_text_style"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             tools:text="05:34"/>
