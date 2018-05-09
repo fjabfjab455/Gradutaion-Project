@@ -1,7 +1,7 @@
 package com.example.zeners.graduationproject.Fragment;
 
 import android.annotation.SuppressLint;
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -38,6 +38,8 @@ import cz.msebera.android.httpclient.HttpStatus;
  * Created by Zeners on 2018/2/4.
  */
 
+// FIXME: 2018/2/4 用Suppress总感觉不对，应该要先实例化这个Fragment才行，待后续查资料
+@SuppressLint("ValidFragment")
 public class RadioFragment extends Fragment {
     private static final String TAG = "RadioFragment";
     private List<Map<String, Object> > listData = new ArrayList<>();
@@ -68,8 +70,6 @@ public class RadioFragment extends Fragment {
         Log.d(TAG, "RadioFragment: non-parameter constructor executing...");
     }
 
-    // FIXME: 2018/2/4 用Suppress总感觉不对，应该要先实例化这个Fragment才行，待后续查资料
-    @SuppressLint("ValidFragment")
     public RadioFragment(Context context, String id) {
         this.id = id;
         this.context = context;
@@ -92,7 +92,8 @@ public class RadioFragment extends Fragment {
         setSwipeRefreshLayout(swipeRefreshLayout);
         getData();
 
-        adapter = new SimpleAdapter(context, listData, R.layout.listview_item, new String[]{"id", "name", "artist"},
+        adapter = new SimpleAdapter(context, listData, R.layout.listview_item,
+                new String[]{"id", "name", "artist"},
                 new int[]{R.id.tx_music_id, R.id.tx_music_name, R.id.tx_music_artist});
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new onItemClickListener() );
@@ -125,10 +126,14 @@ public class RadioFragment extends Fragment {
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                 if (statusCode == HttpStatus.SC_OK) {
                     Log.i(TAG, "*** receive success ***");
-                    MusicMeta musicMeta = new Gson().fromJson(new String(responseBody), MusicMeta.class);
+                    Gson gson = new Gson();
+                    String res = new String(responseBody);
+                    MusicMeta musicMeta = gson.fromJson(res, MusicMeta.class);
                     listData.clear();
-
-                    for (Music music : musicMeta.getMusicList() ) {
+                    Log.w(TAG, "onSuccess: " + res );
+                    Log.w(TAG, "onSuccess: " + musicMeta.getMusiclist() );
+                    for (Music music : musicMeta.getMusiclist() ) {
+                        if (music == null) continue;
                         String name = music.getName();
                         if (name.contains("(") ) { //小写的"("
                             name = name.substring(0, name.indexOf("(") );
@@ -136,7 +141,7 @@ public class RadioFragment extends Fragment {
                             name = name.substring(0, name.indexOf("（"));
                         }
                         Map<String, Object> map = new HashMap<>();
-                        map.put("id", music.getId() );
+                        map.put("id", music.getMusicrid() );
                         map.put("name", name);
                         map.put("artist", music.getArtist() );
                         listData.add(map);
@@ -170,12 +175,6 @@ public class RadioFragment extends Fragment {
             startActivity(intent);
         }
     }
-
-
-
-
-
-
 
 
 }

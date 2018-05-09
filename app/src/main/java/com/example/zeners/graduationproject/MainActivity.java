@@ -1,12 +1,14 @@
 package com.example.zeners.graduationproject;
 
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -18,7 +20,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.example.zeners.graduationproject.Fragment.RadioFragment;
+
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -28,12 +33,21 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     protected FloatingActionButton fab;
     private DrawerLayout drawer;
     private NavigationView navigationView;
+    ArrayList<Fragment> fragments = new ArrayList<>();
 
     @Override
     protected void initData(Bundle savedInstanceState) {
         super.initData(savedInstanceState);
-        ArrayList<Fragment> fragments = new ArrayList<>();
-//        fragments.add()
+        fragments.add(new RadioFragment(context, "2") );
+        fragments.add(new RadioFragment(context, "3") );
+        fragments.add(new RadioFragment(context, "4") );
+        fragments.add(new RadioFragment(context, "5") );
+        fragments.add(new RadioFragment(context, "6") );
+        fragments.add(new RadioFragment(context, "15") );
+        fragments.add(new RadioFragment(context, "22") );
+        fragments.add(new RadioFragment(context, "17") );
+        fragments.add(new RadioFragment(context, "18") );
+        fragments.add(new RadioFragment(context, "19") );
     }
 
     @Override
@@ -84,6 +98,22 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
         //设置滚动模式，动态改变tabLayout的宽度
         tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
+
+        MyPagerAdapter adapter = new MyPagerAdapter(getSupportFragmentManager(), fragments);
+        viewPager.setAdapter(adapter);
+        tabLayout.setupWithViewPager(viewPager);  // 绑定 viewPager
+
+        //设置tab标题
+        tabLayout.getTabAt(0).setText("莫萱日记");
+        tabLayout.getTabAt(1).setText("爆笑糗事段子");
+        tabLayout.getTabAt(2).setText("柜子开了");
+        tabLayout.getTabAt(3).setText("酷我音乐调频");
+        tabLayout.getTabAt(4).setText("一路向北");
+        tabLayout.getTabAt(5).setText("请给我一首歌的时间");
+        tabLayout.getTabAt(6).setText("小曹胡咧咧");
+        tabLayout.getTabAt(7).setText("萱草私房歌");
+        tabLayout.getTabAt(8).setText("每日正能量");
+        tabLayout.getTabAt(9).setText("历史那点事");
 
     }
 
@@ -141,4 +171,26 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+
+    class MyPagerAdapter extends FragmentPagerAdapter {
+        List<android.support.v4.app.Fragment> fragments;
+
+        public MyPagerAdapter(FragmentManager fm, List<android.support.v4.app.Fragment> fragmentList) {
+            super(fm);
+            this.fragments = fragmentList;
+        }
+
+        @Override
+        public android.support.v4.app.Fragment getItem(int position) {
+            return fragments.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return fragments.size();
+        }
+    }
+
+
 }

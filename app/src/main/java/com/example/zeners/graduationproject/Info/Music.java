@@ -5,35 +5,43 @@ package com.example.zeners.graduationproject.Info;
  */
 
 public class Music {
-    private String lyrics;
-    private String id;
+    private String yr;
+    private String musicrid;
     private String name;
+    private String artist;
     private String album;
     private String formats;
-    private String artist;
 
-    public String getLyrics() {
-        return lyrics;
+    public String getYr() {
+        return yr;
     }
 
-    public void setLyrics(String lyrics) {
-        this.lyrics = lyrics;
+    public void setYr(String yr) {
+        this.yr = yr;
     }
 
-    public String getId() {
-        return id;
+    public String getMusicrid() {
+        return musicrid;
     }
 
-    public void setId(String musicId) {
-        this.id = musicId;
+    public void setMusicrid(String musicrid) {
+        this.musicrid = musicrid;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String musicName) {
-        this.name = musicName;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getArtist() {
+        return artist;
+    }
+
+    public void setArtist(String artist) {
+        this.artist = artist;
     }
 
     public String getAlbum() {
@@ -50,13 +58,5 @@ public class Music {
 
     public void setFormats(String formats) {
         this.formats = formats;
-    }
-
-    public void setArtist(String artist) {
-        this.artist = artist;
-    }
-
-    public String getArtist() {
-        return artist;
     }
 }

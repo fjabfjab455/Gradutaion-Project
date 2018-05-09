@@ -7,31 +7,31 @@ import java.util.List;
  */
 
 public class MusicMeta {
-    private String rest;
+    private String ret;
     private String total;
-    private List<Music> musicList;
+    private List<Music> musiclist;
 
-    public void setRest(String rest) {
-        this.rest = rest;
+    public String getRet() {
+        return ret;
     }
 
-    public String getRest() {
-        return rest;
-    }
-
-    public void setTotal(String total) {
-        this.total = total;
+    public void setRet(String ret) {
+        this.ret = ret;
     }
 
     public String getTotal() {
         return total;
     }
 
-    public void setMusicList(List<Music> musicList) {
-        this.musicList = musicList;
+    public void setTotal(String total) {
+        this.total = total;
     }
 
-    public List<Music> getMusicList() {
-        return musicList;
+    public List<Music> getMusiclist() {
+        return musiclist;
+    }
+
+    public void setMusiclist(List<Music> musiclist) {
+        this.musiclist = musiclist;
     }
 }
