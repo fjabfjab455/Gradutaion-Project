@@ -93,7 +93,7 @@ public class RadioFragment extends Fragment {
         getData();
 
         adapter = new SimpleAdapter(context, listData, R.layout.listview_item, new String[]{"id", "name", "artist"},
-                new int[]{R.id.tx_music_id, R.id.txtMusicName, R.id.txtMusicArtist});
+                new int[]{R.id.tx_music_id, R.id.tx_music_name, R.id.tx_music_artist});
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new onItemClickListener() );
         isLoaded = true; //view初始化完成

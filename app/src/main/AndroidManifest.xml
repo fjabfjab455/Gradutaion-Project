@@ -23,7 +23,10 @@
         <activity android:name=".PlayAcitivty" />
         <activity android:name=".Disc.MainDiscActivity" />
 
-        <service android:name=".Disc.service.MusicService" />
+        <service android:name=".Disc.service.MusicService"
+            android:enabled="true"
+            android:exported="false"/>
+
     </application>
 
 </manifest>

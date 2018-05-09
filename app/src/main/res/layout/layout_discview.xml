@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.achillesl.neteasedisc.widget.DiscView
+<com.example.zeners.graduationproject.Disc.widget.DiscView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -27,4 +27,4 @@
         android:layout_height="wrap_content"
         android:src="@drawable/ic_needle"/>
 
-</com.achillesl.neteasedisc.widget.DiscView>
+</com.example.zeners.graduationproject.Disc.widget.DiscView>
