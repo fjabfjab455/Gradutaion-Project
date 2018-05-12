@@ -18,6 +18,7 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.zeners.graduationproject.Disc.MainDiscActivity;
 import com.example.zeners.graduationproject.Info.Music;
 import com.example.zeners.graduationproject.Info.MusicMeta;
 import com.example.zeners.graduationproject.PlayAcitivty;
@@ -172,7 +173,8 @@ public class RadioFragment extends Fragment {
             Intent intent = new Intent(context, PlayAcitivty.class);
             intent.putExtra("id", mId);
             intent.putExtra("name", mName);
-            startActivity(intent);
+//            startActivity(intent);
+            startActivity(new Intent(context,MainDiscActivity.class ) );
         }
     }
 

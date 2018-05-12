@@ -14,6 +14,7 @@ import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +32,8 @@ import com.example.zeners.graduationproject.R;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Handler;
+
+import static android.content.ContentValues.TAG;
 
 /**
  * Created by zouxunxi on 2018/2/15.
@@ -75,6 +78,7 @@ public class DiscView extends RelativeLayout {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
+
         initDiscBackground();
         initViewPager();
         initNeedle();
@@ -90,7 +94,7 @@ public class DiscView extends RelativeLayout {
         ImageView iv_disc_background = findViewById(R.id.ivDiscBackground);
         iv_disc_background.setImageDrawable(getDiscDrawableBackground() );
 
-        int marginTop = (int) DisplayGlobal.SCALE_DISC_MARGIN_TOP * screenHeight;
+        int marginTop = (int) (DisplayGlobal.SCALE_DISC_MARGIN_TOP * screenHeight);
         RelativeLayout.LayoutParams layoutParams = (LayoutParams) iv_disc_background.getLayoutParams();
         layoutParams.setMargins(0, marginTop, 0, 0);
         iv_disc_background.setLayoutParams(layoutParams);
@@ -141,7 +145,7 @@ public class DiscView extends RelativeLayout {
         });
         vp_container.setAdapter(viewPagerAdapter);
         RelativeLayout.LayoutParams layoutParams = (LayoutParams) vp_container.getLayoutParams();
-        int marginTop = (int) DisplayGlobal.SCALE_DISC_MARGIN_TOP * screenHeight;
+        int marginTop = (int) (DisplayGlobal.SCALE_DISC_MARGIN_TOP * screenHeight);
         layoutParams.setMargins(0, marginTop, 0, 0);
         vp_container.setLayoutParams(layoutParams);
     }
@@ -177,12 +181,12 @@ public class DiscView extends RelativeLayout {
 
     private void initNeedle() {
         iv_needle = findViewById(R.id.ivNeedle);
-        int needleWidth = (int) DisplayGlobal.SCALE_NEEDLE_WIDTH * screenWidth;
-        int needleHeight = (int) DisplayGlobal.SCALE_NEEDLE_HEIGHT * screenHeight;
+        int needleWidth = (int) (DisplayGlobal.SCALE_NEEDLE_WIDTH * screenWidth);
+        int needleHeight = (int) (DisplayGlobal.SCALE_NEEDLE_HEIGHT * screenHeight);
 
         //设置唱针的外边距为负数，让其隐藏一部分
-        int marginTop = (int) DisplayGlobal.SCALE_NEEDLE_MARGIN_TOP * screenHeight * -1;
-        int marginLeft = (int) DisplayGlobal.SCALE_NEEDLE_MARGIN_LEFT * screenWidth;
+        int marginTop = (int) (DisplayGlobal.SCALE_NEEDLE_MARGIN_TOP * screenHeight * -1);
+        int marginLeft = (int) (DisplayGlobal.SCALE_NEEDLE_MARGIN_LEFT * screenWidth);
 
         Bitmap originBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_needle);
         Bitmap bitmap = Bitmap.createScaledBitmap(originBitmap, needleWidth, needleHeight, false);
@@ -191,8 +195,8 @@ public class DiscView extends RelativeLayout {
         layoutParams.setMargins(marginLeft, marginTop, 0, 0);
 
         // TODO: 2018/2/16 两个都是width？
-        int pivotX = (int) DisplayGlobal.SCALE_NEEDLE_PIVOT_X * screenWidth;
-        int pivotY = (int) DisplayGlobal.SCALE_NEEDLE_PIVOT_Y * screenWidth;
+        int pivotX = (int) (DisplayGlobal.SCALE_NEEDLE_PIVOT_X * screenWidth);
+        int pivotY = (int) (DisplayGlobal.SCALE_NEEDLE_PIVOT_Y * screenWidth);
         iv_needle.setPivotX(pivotX);
         iv_needle.setPivotY(pivotY);
         iv_needle.setRotation(DisplayGlobal.ROTATION_INIT_NEEDLE);
@@ -214,7 +218,7 @@ public class DiscView extends RelativeLayout {
                 if (needleAnimatorStatus == NeedleAnimatorStatus.IN_TO_FAR_STILL) {
                     needleAnimatorStatus = NeedleAnimatorStatus.FAR_TO_IN_MOVE;
                 } else if (needleAnimatorStatus == NeedleAnimatorStatus.FAR_TO_IN_STILL) {
-                    needleAnimatorStatus = NeedleAnimatorStatus.FAR_TO_IN_STILL;
+                    needleAnimatorStatus = NeedleAnimatorStatus.IN_TO_FAR_MOVE;
                 }
             }
 
@@ -272,16 +276,17 @@ public class DiscView extends RelativeLayout {
 
     //获得唱盘背后半透明的圆形背景
     private Drawable getDiscDrawableBackground() {
-        int discSize = (int) DisplayGlobal.SCALE_DISC_SIZE * screenWidth;
-        Bitmap bitmapDisc = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.ic_disc_blackground),
-                discSize, discSize, false);
+        int discSize = (int) (DisplayGlobal.SCALE_DISC_SIZE * screenWidth);
+        Log.w(TAG, "getDiscDrawableBackground: " + DisplayGlobal.SCALE_DISC_SIZE + "  " + screenWidth);
+        Bitmap bitmapDisc = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(),
+                R.drawable.ic_disc_blackground), discSize, discSize, false);
         return RoundedBitmapDrawableFactory.create(getResources(), bitmapDisc);
     }
 
     //得到唱盘图片（由空心圆盘及专辑图组合而成）
     private Drawable getDiscDrawable(int musicPicRes) {
-        int discSize = (int) DisplayGlobal.SCALE_DISC_SIZE * screenWidth;
-        int musicPicSize = (int) DisplayGlobal.SCALE_MUSIC_PIC_SIZE * screenWidth;
+        int discSize = (int) (DisplayGlobal.SCALE_DISC_SIZE * screenWidth);
+        int musicPicSize = (int) (DisplayGlobal.SCALE_MUSIC_PIC_SIZE * screenWidth);
 
         Bitmap bitmapDisc = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.ic_disc),
                 discSize, discSize, false);
@@ -317,7 +322,7 @@ public class DiscView extends RelativeLayout {
         options.inSampleSize = dstSample; //设置图片采样率
         options.inPreferredConfig = Bitmap.Config.RGB_565; //设置图片解码格式
         Bitmap bitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), musicPicRes, options),
-                musicPicRes,musicPicRes, true);
+                musicPicSize, musicPicSize, true);
 
         return bitmap;
     }
@@ -357,6 +362,7 @@ public class DiscView extends RelativeLayout {
     }
 
     private void playAnimator() {
+        Log.w(TAG, "playAnimator: " );
         //唱针处于远端时，直接播放动画
         if (needleAnimatorStatus == NeedleAnimatorStatus.IN_TO_FAR_STILL) needleAnimator.start();
         //唱针处于往远端方向移动状态时，设置标记，等动画结束后再播放动画
@@ -417,6 +423,7 @@ public class DiscView extends RelativeLayout {
     }
 
     private void play() {
+//        musicStatus = MusicStatus.PLAY; todo
         playAnimator();
     }
 
@@ -432,8 +439,10 @@ public class DiscView extends RelativeLayout {
 
     public void playOrPause() {
         if (musicStatus == MusicStatus.PLAY) {
+            Log.w(TAG, "playOrPause:pause " );
             pause();
         } else {
+            Log.w(TAG, "playOrPause:play " );
             play();
         }
     }

@@ -173,7 +173,6 @@ public class MusicService extends Service {
 
 
 
-
     class MusicReceiver extends BroadcastReceiver {
 
         @Override
@@ -183,6 +182,9 @@ public class MusicService extends Service {
             switch (action) {
                 case ACTION_OPT_MUSIC_PLAY:
                     play(currentMusicIndex);
+                    break;
+                case ACTION_OPT_MUSIC_PAUSE:
+                    pause();
                     break;
                 case ACTION_OPT_MUSIC_NEXT:
                     next();

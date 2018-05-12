@@ -76,6 +76,7 @@ public class PlayAcitivty extends BaseActivity {
                             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                                 if (statusCode == HttpStatus.SC_OK) {
                                     url = new String(responseBody);
+                                    Log.w(TAG, "onSuccess: " + url );
                                     Intent intent = new Intent(context, PlayService.class);
                                     intent.putExtra("URL", url);
                                     startService(intent);
@@ -109,6 +110,7 @@ public class PlayAcitivty extends BaseActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); //设置返回键
         getSupportActionBar().setHomeButtonEnabled(true);
+
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) getWindow().setStatusBarColor(Color.parseColor("#303F9F") );
 

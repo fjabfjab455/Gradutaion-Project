@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -42,6 +43,7 @@ import java.util.List;
  */
 
 public class MainDiscActivity extends BaseActivity {
+    private static final String TAG = "MainDiscActivity";
 
     private DiscView discView;
     private Toolbar toolbar;
@@ -82,6 +84,7 @@ public class MainDiscActivity extends BaseActivity {
     @Override
     protected void initData(Bundle savedInstanceState) {
         super.initData(savedInstanceState);
+        discView = new DiscView(context);
         musicReceiver = new MusicReceiver();
         musicDatas = new ArrayList<>();
         initMusicDatas();
@@ -129,6 +132,7 @@ public class MainDiscActivity extends BaseActivity {
 
             @Override
             public void onMusicChanged(DiscView.MusicChangedStatus musicChangedStatus) {
+                Log.w(TAG, "onMusicChanged: " );
                 switch (musicChangedStatus) {
                     case PLAY:
                         play();
@@ -229,7 +233,8 @@ public class MainDiscActivity extends BaseActivity {
         intentFilter.addAction(MusicService.ACTION_STATUS_MUSIC_PAUSE);
         intentFilter.addAction(MusicService.ACTION_STATUS_MUSIC_DURATION);
         intentFilter.addAction(MusicService.ACTION_STATUS_MUSIC_COMPLETE);
-        LocalBroadcastManager.getInstance(this).registerReceiver(musicReceiver, intentFilter);
+        LocalBroadcastManager.getInstance(this)
+                .registerReceiver(musicReceiver, intentFilter);  // 注册本地广播
     }
 
     //设置状态栏为透明
@@ -237,7 +242,8 @@ public class MainDiscActivity extends BaseActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+            window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.setStatusBarColor(Color.TRANSPARENT);
         }
@@ -266,14 +272,18 @@ public class MainDiscActivity extends BaseActivity {
 
     private Drawable getForegroundDrawable(int musicPicRes) {
         //得到屏幕的宽高比，以便按比例切割图片一部分
-        float widthHeightSize = (float) DisplayGlobal.getScreenWidth(this) / DisplayGlobal.getScreenHeight(this);
+        float widthHeightSize = (float) ( DisplayGlobal.getScreenWidth(context) * 1.0
+                / DisplayGlobal.getScreenHeight(context) * 1.0);
+
         Bitmap bitmap = getForegroundBitmap(musicPicRes);
-        int cropBitmapWidth = (int) widthHeightSize * bitmap.getHeight();
-        int cropBitmapWidthX = (int) ((bitmap.getWidth() - cropBitmapWidth) / 2.0);
+        int cropBitmapWidth = (int) (widthHeightSize * bitmap.getHeight() );
+        int cropBitmapWidthX = (int) ((bitmap.getWidth() - cropBitmapWidth ) / 2.0);
         //切割部分图片
-        Bitmap cropBitmap = Bitmap.createBitmap(bitmap, cropBitmapWidthX, 0, cropBitmapWidth, bitmap.getHeight() );
+        Bitmap cropBitmap = Bitmap.createBitmap(bitmap, cropBitmapWidthX, 0,
+                cropBitmapWidth, bitmap.getHeight() );
         //缩小图片
-        Bitmap scaleBitmap = Bitmap.createScaledBitmap(cropBitmap, bitmap.getWidth() / 50, bitmap.getHeight() / 50, false);
+        Bitmap scaleBitmap = Bitmap.createScaledBitmap(cropBitmap, bitmap.getWidth() / 50,
+                bitmap.getHeight() / 50, false);
         //模糊化
         Bitmap blurBitmap = FastBlurUtil.doBlur(scaleBitmap, 8, true);
 
@@ -294,7 +304,8 @@ public class MainDiscActivity extends BaseActivity {
         BitmapFactory.decodeResource(getResources(), musicPicRes, options);
         int imageWidth = options.outWidth;
         int imageHeight = options.outHeight;
-        if (imageWidth < screenWidth && imageHeight < screenHeight) return BitmapFactory.decodeResource(getResources(), musicPicRes);
+        if (imageWidth < screenWidth && imageHeight < screenHeight)
+            return BitmapFactory.decodeResource(getResources(), musicPicRes);
 
         int sample = 2;
         int sampleX = imageWidth / DisplayGlobal.getScreenWidth(this);
@@ -312,16 +323,19 @@ public class MainDiscActivity extends BaseActivity {
     }
 
     private void play() {
+        Log.w(TAG, "play: " );
         optMusic(MusicService.ACTION_OPT_MUSIC_PLAY);
         startUpdateSeekBarProgress();
     }
 
     private void pause() {
+        Log.w(TAG, "pause: " );
         optMusic(MusicService.ACTION_OPT_MUSIC_PAUSE);
         stopUpdateSeekBarProgress();
     }
 
     private void stop() {
+        Log.w(TAG, "stop: " );
         stopUpdateSeekBarProgress();
         iv_playOrPause.setImageResource(R.drawable.ic_play);
         tv_musicDuration.setText(duration2Text(0) );
@@ -330,6 +344,7 @@ public class MainDiscActivity extends BaseActivity {
     }
 
     private void next() {
+        Log.w(TAG, "next: " );
         rootLayout.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -377,7 +392,8 @@ public class MainDiscActivity extends BaseActivity {
         int min = duration / 1000 / 60;
         int sec = duration / 1000 % 60;
 
-        return (min < 10 ? "0" + min : String.valueOf(min) ) + ":" + (sec < 10 ? "0" + sec : String.valueOf(sec) );
+        return (min < 10 ? "0" + min : String.valueOf(min) ) + ":"
+                + (sec < 10 ? "0" + sec : String.valueOf(sec) );
     }
 
     private void startUpdateSeekBarProgress() {

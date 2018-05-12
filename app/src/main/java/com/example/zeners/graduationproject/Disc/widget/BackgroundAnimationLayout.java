@@ -60,7 +60,7 @@ public class BackgroundAnimationLayout extends RelativeLayout {
         objectAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                int foregroundAlpha = (int) valueAnimator.getAnimatedValue() * 255;
+                int foregroundAlpha = (int) ((float) valueAnimator.getAnimatedValue() * 255);
                 //动态设置Drawable的透明度，让前景图逐渐显示
                 layerDrawable.getDrawable(INDEX_FOREGROUND).setAlpha(foregroundAlpha);
                 BackgroundAnimationLayout.this.setBackground(layerDrawable);
@@ -104,19 +104,5 @@ public class BackgroundAnimationLayout extends RelativeLayout {
         if (this.musicPicRes != musicPicRes) return true;
         return false;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 }
