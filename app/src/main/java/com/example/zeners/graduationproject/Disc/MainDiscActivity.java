@@ -23,6 +23,7 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.support.v7.widget.Toolbar;
+import android.widget.Toast;
 
 import com.example.zeners.graduationproject.BaseActivity;
 import com.example.zeners.graduationproject.CallBack.IPlayInfo;
@@ -32,11 +33,17 @@ import com.example.zeners.graduationproject.Disc.widget.BackgroundAnimationLayou
 import com.example.zeners.graduationproject.Disc.widget.DiscView;
 import com.example.zeners.graduationproject.Global.DisplayGlobal;
 import com.example.zeners.graduationproject.R;
+import com.example.zeners.graduationproject.Service.PlayService;
 import com.example.zeners.graduationproject.Utils.FastBlurUtil;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.HttpStatus;
 
 /**
  * Created by zouxunxi on 2018/2/15.
@@ -53,6 +60,8 @@ public class MainDiscActivity extends BaseActivity {
     private BackgroundAnimationLayout rootLayout;
     private MusicReceiver musicReceiver;
     private List<MusicData> musicDatas;
+    private String musicId, musicName, url;
+    private AsyncHttpClient client;
 
     public static final int MUSIC_MESSAGE = 0;
     public static final String PARAM_MUSIC_LIST = "PARAM_MUSIC_LIST";
@@ -87,6 +96,7 @@ public class MainDiscActivity extends BaseActivity {
         discView = new DiscView(context);
         musicReceiver = new MusicReceiver();
         musicDatas = new ArrayList<>();
+        client = new AsyncHttpClient();
         initMusicDatas();
         initMusicReceiver();
     }
@@ -94,6 +104,13 @@ public class MainDiscActivity extends BaseActivity {
     @Override
     protected void initContentView() {
         super.initContentView();
+        Window window = getWindow();
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.setStatusBarColor(Color.TRANSPARENT);
+
         setContentView(R.layout.activity_disc_main);
     }
 
@@ -203,7 +220,6 @@ public class MainDiscActivity extends BaseActivity {
         setSupportActionBar(toolbar);
         tv_musicDuration.setText(duration2Text(0) );
         tv_totalMusicDuration.setText(duration2Text(0) );
-        discView.setMusicDataList(musicDatas);
         makeStatusBarTransparent();
     }
 
@@ -214,17 +230,48 @@ public class MainDiscActivity extends BaseActivity {
     }
 
     private void initMusicDatas() {
-        MusicData musicData_1 = new MusicData(R.raw.music_1, R.raw.ic_music_1, "寻", "三亩地");
-        MusicData musicData_2 = new MusicData(R.raw.music_2, R.raw.ic_music_2, "Nighting", "YANI");
-        MusicData musicData_3 = new MusicData(R.raw.music_3, R.raw.ic_music_3, "Confield Chase", "Hans Zimmer");
+        musicId = getIntent().getStringExtra("id");
+        musicName = getIntent().getStringExtra("name");
+        Log.w(TAG, "initMusicDatas: " + musicId + "\n" + musicName );
+        client.get("http://antiserver.kuwo.cn/anti.s?type=convert_url&rid=MUSIC_" + musicId + "&format=mp3&response=url",
+                new AsyncHttpResponseHandler() {
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                        if (statusCode == HttpStatus.SC_OK) {
+                            url = new String(responseBody);
+                            Log.w(TAG, "onSuccessurl: " + url );
+//                            Intent intent = new Intent(context, PlayService.class);
+//                            intent.putExtra("URL", url);
+//                            startService(intent);
 
-        musicDatas.add(musicData_1);
-        musicDatas.add(musicData_2);
-        musicDatas.add(musicData_3);
+                            musicDatas.add(new MusicData(url, musicName) );
 
-        Intent intent = new Intent(this, MusicService.class);
-        intent.putExtra(PARAM_MUSIC_LIST, (Serializable) musicDatas);
-        startService(intent);
+//                            musicDatas.add(new MusicData(R.raw.music_1, R.raw.ic_music_1, "Jim Jones at Botany Bay", "Jennifer Jason Leigh"));
+//                            musicDatas.add(new MusicData(R.raw.music_2, R.raw.ic_music_2, "绵绵(Live)", "陈奕迅"));
+//                            musicDatas.add(new MusicData(R.raw.music_3, R.raw.ic_music_3, "Confield Chase", "Hans Zimmer"));
+//                            Log.w(TAG, " musicDatas.add: " );
+                            Intent intent = new Intent(context, MusicService.class);
+                            intent.putExtra(PARAM_MUSIC_LIST, (Serializable) musicDatas);
+                            startService(intent);
+                            discView.setMusicDataList(musicDatas);
+
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                        Toast.makeText(context,error.getMessage(), Toast.LENGTH_SHORT).show();
+                        Log.w(TAG, "*** failed to get url of the audio! ***");
+                    }
+                });
+
+//        musicDatas.add(new MusicData(R.raw.music_1, R.raw.ic_music_1, "Jim Jones at Botany Bay", "Jennifer Jason Leigh"));
+//        musicDatas.add(new MusicData(R.raw.music_2, R.raw.ic_music_2, "绵绵(Live)", "陈奕迅"));
+//        musicDatas.add(new MusicData(R.raw.music_3, R.raw.ic_music_3, "Confield Chase", "Hans Zimmer"));
+//
+//        Intent intent = new Intent(context, MusicService.class);
+//        intent.putExtra(PARAM_MUSIC_LIST, (Serializable) musicDatas);
+//        startService(intent);
     }
 
     private void initMusicReceiver() {

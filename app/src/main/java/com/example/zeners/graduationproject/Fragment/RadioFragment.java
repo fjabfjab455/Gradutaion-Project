@@ -122,45 +122,49 @@ public class RadioFragment extends Fragment {
 
     private void getData() {
         swipeRefreshLayout.setRefreshing(true);
-        new AsyncHttpClient().get(dataUrl, new AsyncHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                if (statusCode == HttpStatus.SC_OK) {
-                    Log.i(TAG, "*** receive success ***");
-                    Gson gson = new Gson();
-                    String res = new String(responseBody);
-                    MusicMeta musicMeta = gson.fromJson(res, MusicMeta.class);
-                    listData.clear();
-                    Log.w(TAG, "onSuccess: " + res );
-                    Log.w(TAG, "onSuccess: " + musicMeta.getMusiclist() );
-                    for (Music music : musicMeta.getMusiclist() ) {
-                        if (music == null) continue;
-                        String name = music.getName();
-                        if (name.contains("(") ) { //小写的"("
-                            name = name.substring(0, name.indexOf("(") );
-                        }else if (name.contains("（") ) { //大写的"（"
-                            name = name.substring(0, name.indexOf("（"));
+        try {
+            new AsyncHttpClient().get(dataUrl, new AsyncHttpResponseHandler() {
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                    if (statusCode == HttpStatus.SC_OK) {
+                        Log.i(TAG, "*** receive success ***");
+                        Gson gson = new Gson();
+                        String res = new String(responseBody);
+                        MusicMeta musicMeta = gson.fromJson(res, MusicMeta.class);
+                        listData.clear();
+                        Log.w(TAG, "onSuccess:res " + res );
+//                        Log.w(TAG, "onSuccess:getMusiclist " + musicMeta.getMusiclist() );
+                        for (Music music : musicMeta.getMusiclist() ) {
+                            if (music == null) continue;
+                            String name = music.getName();
+                            if (name.contains("(") ) { //小写的"("
+                                name = name.substring(0, name.indexOf("(") );
+                            }else if (name.contains("（") ) { //大写的"（"
+                                name = name.substring(0, name.indexOf("（"));
+                            }
+                            Map<String, Object> map = new HashMap<>();
+                            map.put("id", music.getMusicrid() );
+                            map.put("name", name);
+                            map.put("artist", music.getArtist() );
+                            listData.add(map);
                         }
-                        Map<String, Object> map = new HashMap<>();
-                        map.put("id", music.getMusicrid() );
-                        map.put("name", name);
-                        map.put("artist", music.getArtist() );
-                        listData.add(map);
+
+                        adapter.notifyDataSetChanged();
+                        swipeRefreshLayout.setRefreshing(false);
+                        Log.i(TAG, "*** off the refreshing ***");
+
                     }
-
-                    adapter.notifyDataSetChanged();
-                    swipeRefreshLayout.setRefreshing(false);
-                    Log.i(TAG, "*** off the refreshing ***");
-
                 }
-            }
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                Toast.makeText(context, error.getMessage(), Toast.LENGTH_SHORT).show();
-                Log.w(TAG, "*** failed to get the data! ***" );
-            }
-        });
+                @Override
+                public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                    Toast.makeText(context, error.getMessage(), Toast.LENGTH_SHORT).show();
+                    Log.w(TAG, "*** failed to get the data! ***" );
+                }
+            });
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -170,11 +174,10 @@ public class RadioFragment extends Fragment {
         public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
             String mId = ((TextView) view.findViewById(R.id.tx_music_id) ).getText().toString();
             String mName = ((TextView) view.findViewById(R.id.tx_music_name) ).getText().toString();
-            Intent intent = new Intent(context, PlayAcitivty.class);
+            Intent intent = new Intent(context, MainDiscActivity.class);
             intent.putExtra("id", mId);
             intent.putExtra("name", mName);
-//            startActivity(intent);
-            startActivity(new Intent(context,MainDiscActivity.class ) );
+            startActivity(intent);
         }
     }
 

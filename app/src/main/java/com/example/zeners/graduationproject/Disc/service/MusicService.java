@@ -9,12 +9,16 @@ import android.media.MediaPlayer;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 
 import com.example.zeners.graduationproject.Disc.MainDiscActivity;
 import com.example.zeners.graduationproject.Disc.data.MusicData;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static android.content.ContentValues.TAG;
 
 /**
  * Created by zouxunxi on 2018/2/18.
@@ -43,6 +47,7 @@ public class MusicService extends Service {
 
     private int currentMusicIndex = 0;
     private boolean isMusicPause = false;
+    private String url;
 
     private List<MusicData> musicDatas = new ArrayList<>();
     private MusicReceiver musicReceiver = new MusicReceiver();
@@ -95,15 +100,25 @@ public class MusicService extends Service {
         LocalBroadcastManager.getInstance(this).registerReceiver(musicReceiver, intentFilter);
     }
 
-    private void play(int index) {
+    private void play(int index) throws IOException {
+        Log.w(TAG, "index: " + index + "\ncurrentMusicIndex:" + currentMusicIndex + "\nisMusicPause:" + isMusicPause );
+        String currentUrl = musicDatas.get(index).getUrl();
+
         if (index >= musicDatas.size() ) return;
+        if (currentUrl == null) return;
+        Log.w(TAG, "play:1111 " );
         if (currentMusicIndex == index && isMusicPause) {
+            Log.w(TAG, "play:2222 " );
+            mediaPlayer.setDataSource(currentUrl);
             mediaPlayer.start();
         } else {
             mediaPlayer.stop();
             mediaPlayer = null;
 
-            mediaPlayer = MediaPlayer.create(getApplicationContext(), musicDatas.get(index).getMusicRes() );
+//            mediaPlayer = MediaPlayer.create(getApplicationContext(), musicDatas.get(index).getMusicRes() );
+            mediaPlayer = new MediaPlayer();
+            mediaPlayer.setDataSource(currentUrl);
+            mediaPlayer.prepare();
             mediaPlayer.start();
             mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                 @Override
@@ -130,7 +145,7 @@ public class MusicService extends Service {
         mediaPlayer.stop();
     }
 
-    private void next() {
+    private void next() throws IOException {
         if (currentMusicIndex + 1 < musicDatas.size() ) {
             play(currentMusicIndex + 1);
         } else {
@@ -138,7 +153,7 @@ public class MusicService extends Service {
         }
     }
 
-    private void last() {
+    private void last() throws IOException {
         if (currentMusicIndex != 0) {
             play(currentMusicIndex - 1);
         }
@@ -179,24 +194,28 @@ public class MusicService extends Service {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             if (action == null) return;
-            switch (action) {
-                case ACTION_OPT_MUSIC_PLAY:
-                    play(currentMusicIndex);
-                    break;
-                case ACTION_OPT_MUSIC_PAUSE:
-                    pause();
-                    break;
-                case ACTION_OPT_MUSIC_NEXT:
-                    next();
-                    break;
-                case ACTION_OPT_MUSIC_LAST:
-                    last();
-                    break;
-                case ACTION_OPT_MUSIC_SEEK_TO:
-                    seekTo(intent);
-                    break;
-                default:
-                    break;
+            try {
+                switch (action) {
+                    case ACTION_OPT_MUSIC_PLAY:
+                        play(currentMusicIndex);
+                        break;
+                    case ACTION_OPT_MUSIC_PAUSE:
+                        pause();
+                        break;
+                    case ACTION_OPT_MUSIC_NEXT:
+                        next();
+                        break;
+                    case ACTION_OPT_MUSIC_LAST:
+                        last();
+                        break;
+                    case ACTION_OPT_MUSIC_SEEK_TO:
+                        seekTo(intent);
+                        break;
+                    default:
+                        break;
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
     }

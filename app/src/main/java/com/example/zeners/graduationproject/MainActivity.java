@@ -19,6 +19,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.Window;
+import android.view.WindowManager;
 
 import com.example.zeners.graduationproject.Fragment.RadioFragment;
 
@@ -53,11 +55,12 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     @Override
     protected void initContentView() {
         super.initContentView();
-        setContentView(R.layout.activity_main);
-
-        //系统兼容适应
+        // 系统兼容适应
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) getWindow().setStatusBarColor(Color.parseColor("#303F9F"));
-
+        // 隐藏状态栏
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        setContentView(R.layout.activity_main);
     }
 
     @Override
