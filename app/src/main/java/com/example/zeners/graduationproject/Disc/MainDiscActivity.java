@@ -41,6 +41,7 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.HttpStatus;
@@ -230,6 +231,23 @@ public class MainDiscActivity extends BaseActivity {
     }
 
     private void initMusicDatas() {
+
+        List<Map<String, Object>> listData = (List<Map<String, Object>>) getIntent().getSerializableExtra("listData");
+        Log.w(TAG, "initMusicDatas: " + listData.get(0) );
+        Log.w(TAG, "initMusicDatas: posotion:" + getIntent().getIntExtra("position", 0) );
+
+
+
+
+
+
+
+
+
+
+
+
+
         musicId = getIntent().getStringExtra("id");
         musicName = getIntent().getStringExtra("name");
         Log.w(TAG, "initMusicDatas: " + musicId + "\n" + musicName );
@@ -252,6 +270,7 @@ public class MainDiscActivity extends BaseActivity {
 //                            Log.w(TAG, " musicDatas.add: " );
                             Intent intent = new Intent(context, MusicService.class);
                             intent.putExtra(PARAM_MUSIC_LIST, (Serializable) musicDatas);
+                            intent.putExtra("url", url);
                             startService(intent);
                             discView.setMusicDataList(musicDatas);
 

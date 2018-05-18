@@ -40,16 +40,16 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     @Override
     protected void initData(Bundle savedInstanceState) {
         super.initData(savedInstanceState);
+        fragments.add(new RadioFragment(context, "1") );
         fragments.add(new RadioFragment(context, "2") );
         fragments.add(new RadioFragment(context, "3") );
         fragments.add(new RadioFragment(context, "4") );
         fragments.add(new RadioFragment(context, "5") );
         fragments.add(new RadioFragment(context, "6") );
-        fragments.add(new RadioFragment(context, "15") );
-        fragments.add(new RadioFragment(context, "22") );
-        fragments.add(new RadioFragment(context, "17") );
-        fragments.add(new RadioFragment(context, "18") );
-        fragments.add(new RadioFragment(context, "19") );
+        fragments.add(new RadioFragment(context, "7") );
+        fragments.add(new RadioFragment(context, "8") );
+        fragments.add(new RadioFragment(context, "9") );
+        fragments.add(new RadioFragment(context, "10") );
     }
 
     @Override

@@ -47,7 +47,7 @@ public class MusicService extends Service {
 
     private int currentMusicIndex = 0;
     private boolean isMusicPause = false;
-    private String url;
+    private String currentUrl;
 
     private List<MusicData> musicDatas = new ArrayList<>();
     private MusicReceiver musicReceiver = new MusicReceiver();
@@ -77,6 +77,7 @@ public class MusicService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        mediaPlayer.stop();
         mediaPlayer.release();
         mediaPlayer = null;
         LocalBroadcastManager.getInstance(this).unregisterReceiver(musicReceiver);
@@ -87,6 +88,7 @@ public class MusicService extends Service {
         if (intent == null) return;
         List<MusicData> mMusicDatas = (List<MusicData>) intent.getSerializableExtra(MainDiscActivity.PARAM_MUSIC_LIST);
         musicDatas.addAll(mMusicDatas);
+        currentUrl = intent.getStringExtra("url");
     }
 
     private void initBroadcastReceiver() {
@@ -102,7 +104,9 @@ public class MusicService extends Service {
 
     private void play(int index) throws IOException {
         Log.w(TAG, "index: " + index + "\ncurrentMusicIndex:" + currentMusicIndex + "\nisMusicPause:" + isMusicPause );
-        String currentUrl = musicDatas.get(index).getUrl();
+//        mediaPlayer.reset();
+//        String currentUrl = musicDatas.get(index).getUrl();
+        Log.w(TAG, "currentUrl: " + currentUrl );
 
         if (index >= musicDatas.size() ) return;
         if (currentUrl == null) return;

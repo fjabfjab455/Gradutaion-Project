@@ -27,6 +27,7 @@ import com.google.gson.Gson;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -92,7 +93,7 @@ public class RadioFragment extends Fragment {
         swipeRefreshLayout = view.findViewById(R.id.swipe_layout);
         setSwipeRefreshLayout(swipeRefreshLayout);
         getData();
-
+//        if (listData.isEmpty() ) return null;
         adapter = new SimpleAdapter(context, listData, R.layout.listview_item,
                 new String[]{"id", "name", "artist"},
                 new int[]{R.id.tx_music_id, R.id.tx_music_name, R.id.tx_music_artist});
@@ -149,10 +150,9 @@ public class RadioFragment extends Fragment {
                             listData.add(map);
                         }
 
-                        adapter.notifyDataSetChanged();
+                        /*if (adapter != null)*/ adapter.notifyDataSetChanged();
                         swipeRefreshLayout.setRefreshing(false);
                         Log.i(TAG, "*** off the refreshing ***");
-
                     }
                 }
 
@@ -177,10 +177,11 @@ public class RadioFragment extends Fragment {
             Intent intent = new Intent(context, MainDiscActivity.class);
             intent.putExtra("id", mId);
             intent.putExtra("name", mName);
+            intent.putExtra("listData",(Serializable) listData);
+            intent.putExtra("position", position);
             startActivity(intent);
         }
     }
-
 
 }
 
